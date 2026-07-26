@@ -333,9 +333,18 @@
 
   .projects-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    grid-template-columns: repeat(2, 1fr);
     gap: 32px;
     padding-bottom: 100px;
+    max-width: 900px;
+    margin: 0 auto;
+  }
+
+  @media (max-width: 768px) {
+    .projects-grid {
+      grid-template-columns: 1fr;
+      max-width: 100%;
+    }
   }
 
   .project-card {
@@ -743,16 +752,6 @@
         <h3>CreatorCopilot</h3>
         <span class="project-tag">AI Agent MVP</span>
       </a>
-
-      <div class="project-card">
-        <h3>RTMP-In Networking</h3>
-        <span class="project-tag">Technical Implementation</span>
-      </div>
-
-      <div class="project-card">
-        <h3>Coming Soon</h3>
-        <span class="project-tag">In Progress</span>
-      </div>
 
     </div>
   </div>
