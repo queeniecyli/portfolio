@@ -1610,7 +1610,7 @@
 <section class="section together" id="together">
   <div class="wrap">
     <span class="section-eyebrow reveal">Let's work together</span>
-    <h2 class="reveal">I bridge the gap between what a business strategy and what a technical rollout actually delivers.</h2>
+    <h2 class="reveal">I bridge the gap between what a business strategy requires and what a technical rollout actually delivers.</h2>
     <p class="lead reveal">I translate complex business challenges into technology solutions that drive adoption at scale. From uncovering requirements and shaping deployment strategies to coordinating enterprise rollouts, I focus on ensuring technology delivers meaningful business outcomes in line with successful implementation.<br><br>At Macquarie Group, I drive enterprise initiatives in Unified Communications across Zoom, Microsoft Teams, and AV platforms, working across business, engineering, security, and vendor teams to deliver workplace technology solutions at scale.</p>
     <div class="together-actions reveal">
       <a class="btn-outline" href="#work">
@@ -1628,7 +1628,7 @@
 <section class="section journey" id="journey">
   <div class="wrap">
     <span class="section-eyebrow reveal">My professional journey</span>
-    <h2 class="reveal">Experience that shape my <b>skillset</b>.</h2>
+    <h2 class="reveal">Experience that shapes my <b>skillset</b>.</h2>
 
     <div class="journey-timeline-line"></div>
 
@@ -1754,7 +1754,7 @@
         <h3>Zoom AI Companion</h3>
         <span class="project-tag">Enterprise Rollout</span>
       </div>
-      <p>Led the enterprise rollout of Zoom's AI assistant across 20 000+ employees at Macquarie Group. Coordinated technical deployment, stakeholder alignment, change management, and adoption strategy across eight business divisions.</p>
+      <p>Led the enterprise rollout of Zoom's AI assistant across 20, 000+ employees at Macquarie Group. Coordinated technical deployment, stakeholder alignment, change management, and adoption strategy across eight business divisions.</p>
       <p>Delivered a secure, governed AI solution leveraging Zero Data Retention architecture while navigating complex enterprise requirements, regulatory compliance, and organisational change at scale.</p>
       <div class="project-skills">
         <span class="skill-bubble">Strategy</span>
@@ -1789,7 +1789,7 @@
         <span class="project-tag">Startup Idea</span>
       </div>
       <p>A gamified productivity app that turns procrastination into progress through financial accountability. Currently in pilot deployment with live TestFlight beta, combining behavioral psychology, streak mechanics, and AI-powered task prioritisation to help users build sustainable habits.</p>
-      <p>Built around a "commitment jar" model where users stake money on their goals, complete tasks to keep your cash, miss deadlines and watch it disappear. Over 1 year of user research, design iteration, and product development.</p>
+      <p>Built around a "commitment jar" model where users stake money on their goals, complete tasks to keep the cash, or miss deadlines and watch it disappear. Over 1 year of user research, design iteration, and product development.</p>
       <div class="project-skills">
         <span class="skill-bubble">Product Design</span>
         <span class="skill-bubble">UX Strategy</span>
@@ -1817,7 +1817,7 @@
 
     <div class="about-grid">
       <div class="about-panel reveal">
-        <p class="about-copy">Beyond the camera, I'm constantly exploring Sydney's food scene, discovering new experiences, and finding inspiration for my next project. You'll also find me training for my next race or chasing my next creative challenge.</p>
+        <p class="about-copy">Beyond the camera, I'm constantly exploring Sydney's food scene, discovering new experiences, and finding inspiration for my next project. You'll also find me training for my next running race or chasing my next creative challenge.</p>
         <div class="about-stats">
           <div class="stat"><b>10+</b><span>Businesses partnered</span></div>
           <div class="stat"><b>100K+</b><span>Views across platforms</span></div>
@@ -1862,7 +1862,7 @@
     </div>
     <div class="modal-detail">
       <p><strong>What I Did</strong></p>
-      <p>Led the enterprise rollout of Zoom's generative AI assistant across 20 000+ employees at Macquarie Group. This was a high-stakes deployment requiring coordination across technical teams, business divisions, compliance, and change management.</p>
+      <p>Led the enterprise rollout of Zoom's generative AI assistant across 20, 000+ employees at Macquarie Group. This was a high-stakes deployment requiring coordination across technical teams, business divisions, compliance, and change management.</p>
 
       <p><strong>The Challenge</strong></p>
       <p>Introducing generative AI in a regulated financial institution meant navigating strict security requirements, data governance policies, and organisational change at scale. Employees needed to trust the technology while understanding how to integrate it into daily workflows.</p>
@@ -1959,7 +1959,7 @@
     </div>
     <div class="modal-detail">
       <p><strong>What I Built</strong></p>
-      <p>A gamified productivity app currently in pilot deployment (live TestFlight beta). OnTrack transforms procrastination into progress through financial accountability, combining behavioral psychology with mobile-first product design over 1+ year of development.</p>
+      <p>A gamified productivity app currently in pilot deployment (live TestFlight beta). OnTrack transforms procrastination into progress through financial accountability, combining behavioural psychology with mobile-first product design over 1+ year of development.</p>
 
       <p><strong>The Core Problem</strong></p>
       <p>People don't need another to-do list, they need a reason to actually complete it. Traditional productivity apps focus on organisation, not motivation. Users plan endlessly but struggle with execution. The gap isn't knowledge, it's accountability.</p>
@@ -2051,6 +2051,16 @@
       });
     });
   })();
+
+  // Fix bfcache issue - reset transition state when navigating back
+  window.addEventListener('pageshow', function(event) {
+    if (event.persisted) {
+      // Page was restored from bfcache
+      document.body.classList.remove('page-transition-out', 'page-transition-in');
+      document.body.classList.add('page-loaded');
+      sessionStorage.removeItem('portfolioTransition');
+    }
+  });
 
   // nav + social side panels (share overlay, only one open at a time)
   (function() {

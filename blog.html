@@ -579,6 +579,16 @@
       });
     });
   })();
+
+  // Fix bfcache issue - reset transition state when navigating back
+  window.addEventListener('pageshow', function(event) {
+    if (event.persisted) {
+      // Page was restored from bfcache
+      document.body.classList.remove('page-transition-out', 'page-transition-in');
+      document.body.classList.add('page-loaded');
+      sessionStorage.removeItem('portfolioTransition');
+    }
+  });
 </script>
 
 </body>
