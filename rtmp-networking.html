@@ -1,0 +1,780 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>RTMP-In Networking - Queenie Li</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'%3E%3Cpath d='M38,200 L38,95 Q38,15 100,15 Q162,15 162,95 L162,200 Z' fill='%236B4226' stroke='%232B1D14' stroke-width='4'/%3E%3Cpath d='M85,150 Q100,158 115,150 L115,172 Q100,178 85,172 Z' fill='%23EEC9A0'/%3E%3Cpath d='M85,150 L85,172 Q100,178 115,172 L115,150' stroke='%232B1D14' stroke-width='2' fill='none'/%3E%3Cpath d='M70,60 L148,95 Q148,150 100,155 Q52,150 52,95 Q52,62 58,60 Z' fill='%23EEC9A0' stroke='%232B1D14' stroke-width='4'/%3E%3Ccircle cx='82' cy='100' r='6' fill='%232B1D14'/%3E%3Ccircle cx='118' cy='100' r='6' fill='%232B1D14'/%3E%3Cellipse cx='72' cy='112' rx='9' ry='6' fill='%23F0A0A8' opacity='0.75'/%3E%3Cellipse cx='128' cy='112' rx='9' ry='6' fill='%23F0A0A8' opacity='0.75'/%3E%3Cpath d='M92,122 Q100,128 108,122' stroke='%232B1D14' stroke-width='3' fill='none'/%3E%3Cpath d='M40,200 L40,193 Q42,176 64,170 Q82,166 100,168 Q118,166 136,170 Q158,176 160,193 L160,200 Z' fill='%239B9B94' stroke='%232B1D14' stroke-width='4'/%3E%3C/svg%3E">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,500&family=Inter:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap');
+
+  :root {
+    --page-bg: #f7efe8;
+    --banner-bg: linear-gradient(135deg, #224b5b 0%, #356f7a 100%);
+    --banner-text: #f8f3ea;
+    --surface: #ffffff;
+    --surface-alt: #f3ebe0;
+    --cream: #f7efe8;
+    --cream-dim: #efe0cf;
+    --ink: #26343f;
+    --ink-soft: #5e6b76;
+    --rust: #c96b46;
+    --rust-soft: #f3dccf;
+    --accent: #2b7a75;
+    --accent-strong: #215c57;
+    --accent-soft: #dcefe9;
+    --border: #d9d2c7;
+    --serif: 'Fraunces', serif;
+    --sans: 'Manrope', 'Inter', sans-serif;
+    --mono: 'IBM Plex Mono', monospace;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: linear-gradient(180deg, #fcf8f2 0%, var(--page-bg) 100%);
+    color: var(--ink);
+    font-family: var(--sans);
+    line-height: 1.7;
+    font-size: 16px;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+
+  .wrap { max-width: 1200px; margin: 0 auto; padding: 0 48px; }
+
+  /* header */
+  header {
+    position: sticky; top: 0; z-index: 20;
+    background: var(--banner-bg);
+    color: var(--banner-text);
+    backdrop-filter: blur(10px);
+    border-bottom: none;
+    box-shadow: 0 10px 30px rgba(20, 39, 49, 0.12);
+  }
+  header .wrap {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    height: 76px;
+    max-width: 1200px;
+    padding: 0 48px;
+  }
+  .header-center {
+    display: flex;
+    gap: 32px;
+    align-items: center;
+  }
+  .header-center a {
+    font-family: var(--sans);
+    font-size: 13px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.32em;
+    color: var(--banner-text);
+    text-decoration: none;
+    transition: color 0.2s ease, opacity 0.2s ease;
+  }
+  .header-center a:hover { color: #ffd9b8; }
+  .header-right { justify-self: end; }
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-family: var(--serif);
+    font-weight: 600;
+    font-size: 24px;
+    color: var(--banner-text);
+    text-decoration: none;
+    letter-spacing: -0.01em;
+  }
+  .logo span { color: #ffd9b8; }
+  .header-left { display: flex; align-items: center; gap: 18px; }
+  .connect-btn {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: var(--accent); color: white;
+    font-family: var(--sans);
+    font-size: 13px; font-weight: 700;
+    letter-spacing: 0.02em;
+    padding: 10px 20px 10px 16px; border-radius: 999px;
+    text-decoration: none;
+    transition: background 0.2s ease, transform 0.2s ease, gap 0.2s ease, box-shadow 0.2s ease;
+    box-shadow: 0 4px 12px rgba(43, 122, 117, 0.15);
+  }
+  .connect-btn:hover {
+    background: var(--accent-strong);
+    transform: translateY(-1px);
+    gap: 11px;
+    box-shadow: 0 6px 16px rgba(43, 122, 117, 0.25);
+  }
+  .connect-btn svg { width: 16px; height: 16px; flex-shrink: 0; }
+
+  /* project detail page */
+  .project-detail {
+    padding: 60px 0 100px;
+  }
+  .back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--accent);
+    text-decoration: none;
+    font-family: var(--sans);
+    font-size: 13px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 32px;
+    transition: gap 0.2s ease;
+  }
+  .back-link:hover { gap: 12px; }
+  .project-header {
+    display: grid;
+    grid-template-columns: 120px 1fr;
+    gap: 32px;
+    align-items: start;
+    margin-bottom: 48px;
+    padding-bottom: 32px;
+    border-bottom: 1px solid var(--border);
+  }
+  .project-header-image {
+    width: 120px;
+    height: 120px;
+    background: var(--accent-soft);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 48px;
+  }
+  .project-header h1 {
+    font-family: var(--serif);
+    font-size: clamp(32px, 4vw, 42px);
+    font-weight: 600;
+    margin-bottom: 12px;
+    color: var(--ink);
+  }
+  .project-tag {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--ink-soft);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    display: inline-block;
+    margin-right: 12px;
+  }
+  .read-time {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--ink-soft);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+  .read-time::before {
+    content: '•';
+    margin: 0 8px;
+  }
+  .project-content p {
+    color: var(--ink-soft);
+    font-size: 15px;
+    line-height: 1.75;
+    margin-bottom: 20px;
+  }
+  .project-content p strong {
+    color: var(--ink);
+    font-size: 19px;
+    display: block;
+    margin-top: 36px;
+    margin-bottom: 16px;
+  }
+  .project-content ul {
+    color: var(--ink-soft);
+    margin-left: 24px;
+    margin-top: 12px;
+    margin-bottom: 20px;
+  }
+  .project-content li {
+    color: var(--ink-soft);
+    margin-bottom: 8px;
+    line-height: 1.6;
+    font-size: 15px;
+  }
+  .feature-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+    margin: 20px 0;
+  }
+  .feature-box {
+    background: var(--accent-soft);
+    padding: 16px 20px;
+    border-radius: 10px;
+    font-size: 14px;
+    color: var(--ink);
+    font-weight: 500;
+  }
+  .project-divider {
+    height: 1px;
+    background: var(--border);
+    margin: 40px 0;
+  }
+  .code-block {
+    background: var(--surface-alt);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 20px;
+    margin: 20px 0;
+    font-family: var(--mono);
+    font-size: 13px;
+    line-height: 1.6;
+    overflow-x: auto;
+  }
+
+  footer {
+    padding: 40px 0;
+    text-align: center;
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--ink-soft);
+    border-top: 1px solid var(--cream-dim);
+  }
+
+  /* Mobile menu button */
+  .menu-btn {
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 4px;
+    background: var(--accent);
+    padding: 10px 16px;
+    border-radius: 999px;
+    border: none;
+    cursor: pointer;
+    height: 41px;
+    transition: background 0.2s ease, transform 0.2s ease;
+  }
+  .menu-btn:hover {
+    background: var(--accent-strong);
+    transform: translateY(-1px);
+  }
+  .menu-btn span {
+    display: block;
+    width: 20px;
+    height: 2px;
+    background: white;
+    transition: background 0.2s ease;
+  }
+
+  /* nav panel */
+  .nav-panel {
+    position: fixed;
+    top: 0;
+    right: 0;
+    height: 100%;
+    width: 420px;
+    background: var(--surface);
+    border-left: 1px solid var(--border);
+    z-index: 30;
+    transform: translateX(100%);
+    transition: transform 0.35s cubic-bezier(.65,0,.35,1);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 60px;
+    box-shadow: -10px 0 30px rgba(20, 39, 49, 0.08);
+  }
+  .nav-panel.open {
+    transform: translateX(0);
+  }
+  .nav-panel-close {
+    position: absolute;
+    top: 32px;
+    right: 48px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-family: var(--sans);
+    font-size: 13px;
+    color: var(--ink-soft);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    transition: color 0.2s ease;
+  }
+  .nav-panel-close:hover {
+    color: var(--accent);
+  }
+  .nav-panel nav {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .nav-panel nav a {
+    color: var(--ink);
+    text-decoration: none;
+    font-family: var(--serif);
+    font-size: 36px;
+    padding: 18px 0;
+    border-bottom: 1px solid var(--accent-soft);
+    transition: color 0.2s ease, padding-left 0.2s ease;
+  }
+  .nav-panel nav a:hover {
+    color: var(--accent);
+    padding-left: 8px;
+  }
+  .nav-panel-cta {
+    margin-top: 24px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 16px 32px !important;
+    background: var(--accent) !important;
+    color: white !important;
+    border-radius: 999px;
+    font-family: var(--sans) !important;
+    font-size: 16px !important;
+    font-weight: 700;
+    text-decoration: none;
+    border: none !important;
+    transition: background 0.2s ease, transform 0.2s ease;
+  }
+  .nav-panel-cta:hover {
+    background: var(--accent-strong) !important;
+    transform: translateY(-2px);
+    padding-left: 32px !important;
+  }
+
+  /* overlay */
+  .panel-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(33,29,24,0.35);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+    z-index: 29;
+  }
+  .panel-overlay.open {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  /* back to top button */
+  .back-to-top {
+    position: fixed;
+    left: 32px;
+    bottom: 32px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    z-index: 9998;
+    opacity: 1;
+    pointer-events: auto;
+  }
+  .back-to-top.hidden {
+    opacity: 0;
+    pointer-events: none;
+  }
+  .back-to-top-circle {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: var(--accent);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(43, 122, 117, 0.2);
+  }
+  .back-to-top:hover .back-to-top-circle {
+    background: var(--accent-strong);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(43, 122, 117, 0.3);
+  }
+  .back-to-top svg {
+    width: 20px;
+    height: 20px;
+    stroke: white;
+    stroke-width: 2.5;
+  }
+  .back-to-top-text {
+    font-family: var(--sans);
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--ink);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  @media (max-width: 700px) {
+    .wrap { padding: 0 24px; }
+    header .wrap { padding: 0 24px; }
+    .header-center { display: none; }
+    .menu-btn { display: inline-flex; }
+    .nav-panel { width: 100%; }
+    .project-header {
+      grid-template-columns: 1fr;
+      gap: 24px;
+    }
+    .project-header-image {
+      width: 80px;
+      height: 80px;
+      font-size: 32px;
+    }
+    .feature-grid {
+      grid-template-columns: 1fr;
+      gap: 12px;
+    }
+    .back-to-top {
+      left: 24px;
+      bottom: 24px;
+    }
+    .back-to-top-text {
+      display: none;
+    }
+  }
+</style>
+</head>
+<body>
+
+<button class="back-to-top hidden" id="backToTop" aria-label="Back to top">
+  <div class="back-to-top-circle">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+      <polyline points="18 15 12 9 6 15"></polyline>
+    </svg>
+  </div>
+  <span class="back-to-top-text">Back to Top</span>
+</button>
+
+<header>
+  <div class="wrap">
+    <div class="header-left">
+      <a class="logo" href="index.html">QueenieLi</a>
+    </div>
+    <div class="header-center">
+      <a href="index.html">Home</a>
+      <a href="index.html#journey">Experience</a>
+      <a href="index.html#work">Work</a>
+      <a href="index.html#about">About</a>
+    </div>
+    <div class="header-right">
+      <a class="connect-btn" href="mailto:queeniecyli@gmail.com?subject=Hi%20Queenie%2C%20let%27s%20connect!">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 5l10 7 10-7"/><rect x="2" y="4" width="20" height="16" rx="2"/></svg>
+        Let's connect
+      </a>
+      <button class="menu-btn" id="menuBtnToggle" aria-label="Open menu">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<div class="panel-overlay" id="panelOverlay"></div>
+
+<aside class="nav-panel" id="navPanel">
+  <button class="nav-panel-close" id="navClose">CLOSE ✕</button>
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="index.html#journey">Experience</a>
+    <a href="index.html#work">Work</a>
+    <a href="index.html#about">About</a>
+    <a href="mailto:queeniecyli@gmail.com?subject=Hi%20Queenie%2C%20let%27s%20connect!" class="nav-panel-cta">Let's connect</a>
+  </nav>
+</aside>
+
+<section class="project-detail">
+  <div class="wrap">
+    <a href="projects.html" class="back-link">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="15 18 9 12 15 6"></polyline>
+      </svg>
+      Back to Projects
+    </a>
+
+    <div class="project-header">
+      <div class="project-header-image">🎥</div>
+      <div>
+        <h1>RTMP-In Networking</h1>
+        <span class="project-tag">Technical Implementation</span>
+        <span class="read-time">5 min read</span>
+      </div>
+    </div>
+
+    <div class="project-content">
+      <p><strong>The Challenge: Critical Protocol Update for Company Events</strong></p>
+      <p>At Macquarie Group, live streaming is essential for broadcasting high-stakes corporate events such as the Annual General Meeting (AGM), town halls, and executive communications to global audiences. The organisation relies on RTMP (Real-Time Messaging Protocol) to stream professional broadcast content into Microsoft Teams Live Events for company-wide distribution.</p>
+
+      <p>Microsoft announced a critical infrastructure change: the RTMP ingest protocol for Teams Live Events would be updated, requiring changes to both the RTMP domain endpoint and port configuration. The announcement came approximately one month before the AGM, leaving a narrow window to complete the migration. Without this update, all scheduled live events—including the upcoming AGM—would fail to stream, creating a high-impact business continuity risk.</p>
+
+      <p>The challenge was to coordinate a time-sensitive technical migration across network engineering, event production teams, and broadcast operators within a 2-week execution window to prevent service disruption for mission-critical corporate communications.</p>
+
+      <div class="project-divider"></div>
+
+      <p><strong>What is RTMP and Why It Matters for Corporate Events</strong></p>
+      <p>RTMP (Real-Time Messaging Protocol) is a TCP-based protocol designed for transmitting live audio and video from broadcasting software to streaming platforms. For enterprise events, RTMP enables professional broadcast workflows with dedicated cameras, graphics overlays, and multi-source mixing—capabilities not available with standard webcam-based conference tools.</p>
+
+      <p><strong>Why Organisations Use RTMP for Live Events:</strong></p>
+      <div class="feature-grid">
+        <div class="feature-box">Broadcast-quality production with professional cameras and mixers</div>
+        <div class="feature-box">Real-time graphics, lower thirds, and branding overlays</div>
+        <div class="feature-box">Multi-source switching between cameras, slides, and videos</div>
+        <div class="feature-box">Reliable low-latency streaming to large audiences</div>
+      </div>
+
+      <p><strong>Real-World Use Cases at Macquarie:</strong></p>
+      <ul>
+        <li><strong>Annual General Meeting (AGM):</strong> High-stakes shareholder communications requiring broadcast-quality production</li>
+        <li><strong>Executive Town Halls:</strong> CEO and leadership updates distributed to 20,000+ global employees</li>
+        <li><strong>Corporate Announcements:</strong> Financial results, strategic initiatives, and organisational updates</li>
+        <li><strong>Training & Development:</strong> Large-scale learning events with professional presentation quality</li>
+      </ul>
+
+      <div class="project-divider"></div>
+
+      <p><strong>The Microsoft Protocol Update</strong></p>
+      <p>Microsoft announced that the RTMP ingest endpoint for Teams Live Events would be migrated to a new infrastructure, requiring updates to both the server domain and port configuration. Failure to update configurations before the migration deadline would result in stream connection failures.</p>
+
+      <p><strong>What Changed:</strong></p>
+      <div class="code-block">
+<strong>Previous Configuration (Legacy):</strong><br>
+RTMP Server: rtmp://[old-domain].streaming.media.azure.net:1935<br>
+Port: 1935 (standard RTMP port)<br>
+<br>
+<strong>New Configuration (Required):</strong><br>
+RTMP Server: rtmp://[new-domain].ingest.streaming.mediaservices.windows.net:1936<br>
+Port: 1936 (updated port)<br>
+Domain: New Azure Media Services infrastructure
+      </div>
+
+      <p><strong>Business Impact if Not Updated:</strong></p>
+      <ul>
+        <li>Scheduled AGM broadcast would fail to stream to attendees</li>
+        <li>Executive communications disrupted for global workforce</li>
+        <li>Reputational risk from failed high-visibility events</li>
+        <li>Emergency mitigation requiring rapid troubleshooting during live events</li>
+      </ul>
+
+      <p><strong>Network Configuration Complexity:</strong></p>
+      <p>The organisation had existing firewall rules configured for the legacy RTMP infrastructure (port 1935, old domain). The migration required both updating existing rules and adding new rules for the new protocol configuration—coordinated across network engineering teams to ensure seamless transition without impacting scheduled events.</p>
+
+      <div class="project-divider"></div>
+
+      <p><strong>Technical Architecture & Dependencies</strong></p>
+      <p>Understanding the full technical stack was critical to coordinating the protocol migration without service disruption.</p>
+
+      <p><strong>Architecture Components:</strong></p>
+
+      <div style="display: grid; grid-template-columns: 1fr; gap: 16px; margin: 24px 0;">
+        <div style="background: var(--surface); border: 2px solid var(--border); border-radius: 12px; padding: 20px;">
+          <p style="font-family: var(--sans); font-size: 16px; color: var(--accent-strong); font-weight: 700; margin-bottom: 12px;">1. Network Ingress Layer</p>
+          <ul style="margin: 0; padding-left: 20px;">
+            <li style="color: var(--ink-soft); font-size: 14px; margin-bottom: 6px; line-height: 1.6;"><strong>Existing rules:</strong> Firewall configuration for legacy RTMP (port 1935, old domain)</li>
+            <li style="color: var(--ink-soft); font-size: 14px; margin-bottom: 6px; line-height: 1.6;"><strong>Updated rules:</strong> Modified firewall policies for new RTMP endpoint (port 1936, new domain)</li>
+            <li style="color: var(--ink-soft); font-size: 14px; margin-bottom: 6px; line-height: 1.6;">Network segmentation to isolate streaming traffic</li>
+            <li style="color: var(--ink-soft); font-size: 14px; margin-bottom: 6px; line-height: 1.6;">DDoS protection and rate limiting</li>
+            <li style="color: var(--ink-soft); font-size: 14px; margin-bottom: 0; line-height: 1.6;">Load balancing for high-availability streaming</li>
+          </ul>
+        </div>
+
+        <div style="background: var(--surface); border: 2px solid var(--border); border-radius: 12px; padding: 20px;">
+          <p style="font-family: var(--sans); font-size: 16px; color: var(--accent-strong); font-weight: 700; margin-bottom: 12px;">2. Security & Authentication</p>
+          <ul style="margin: 0; padding-left: 20px;">
+            <li style="color: var(--ink-soft); font-size: 14px; margin-bottom: 6px; line-height: 1.6;">Stream key authentication for authorised broadcasters</li>
+            <li style="color: var(--ink-soft); font-size: 14px; margin-bottom: 6px; line-height: 1.6;">TLS encryption for secure transmission (RTMPS)</li>
+            <li style="color: var(--ink-soft); font-size: 14px; margin-bottom: 6px; line-height: 1.6;">Access control policies and user provisioning</li>
+            <li style="color: var(--ink-soft); font-size: 14px; margin-bottom: 0; line-height: 1.6;">Monitoring and logging for security auditing</li>
+          </ul>
+        </div>
+
+        <div style="background: var(--surface); border: 2px solid var(--border); border-radius: 12px; padding: 20px;">
+          <p style="font-family: var(--sans); font-size: 16px; color: var(--accent-strong); font-weight: 700; margin-bottom: 12px;">3. Microsoft Teams Live Events Platform</p>
+          <ul style="margin: 0; padding-left: 20px;">
+            <li style="color: var(--ink-soft); font-size: 14px; margin-bottom: 6px; line-height: 1.6;">Teams Live Events configuration with RTMP ingest enabled</li>
+            <li style="color: var(--ink-soft); font-size: 14px; margin-bottom: 6px; line-height: 1.6;">Azure Media Services backend infrastructure</li>
+            <li style="color: var(--ink-soft); font-size: 14px; margin-bottom: 6px; line-height: 1.6;">CDN distribution to global employee audience</li>
+            <li style="color: var(--ink-soft); font-size: 14px; margin-bottom: 0; line-height: 1.6;">Recording and archival through Teams platform</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="project-divider"></div>
+
+      <p><strong>Migration Strategy & Execution</strong></p>
+      <p>With approximately one month's notice before the AGM and only 2 weeks allocated for execution, the protocol migration required coordinated action across multiple stakeholder groups with minimal margin for error.</p>
+
+      <p><strong>My Role: Technical Coordination & Communication</strong></p>
+      <ul>
+        <li><strong>Impact Assessment:</strong> Identified all affected events, broadcast workflows, and technical dependencies requiring updates</li>
+        <li><strong>Network Engineering Coordination:</strong> Worked with network teams to update existing firewall rules and add new rules for port 1936 and new domain whitelist configurations</li>
+        <li><strong>Stakeholder Communication:</strong> Notified event production teams, broadcast operators, and AV vendors about required configuration changes</li>
+        <li><strong>Documentation Updates:</strong> Revised technical guides, runbooks, and configuration templates with new RTMP parameters</li>
+        <li><strong>Testing & Validation:</strong> Coordinated pre-event testing with production teams to validate new configuration before AGM</li>
+        <li><strong>Contingency Planning:</strong> Developed rollback procedures and alternative streaming methods in case of migration issues</li>
+      </ul>
+
+      <p><strong>Cross-Functional Team Coordination:</strong></p>
+      <p>Successfully delivering this migration in 2 weeks required coordinating across multiple technical and operational teams, each with critical dependencies on the RTMP infrastructure.</p>
+
+      <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin: 24px 0;">
+        <div style="background: var(--accent-soft); border-left: 3px solid var(--accent); padding: 16px 20px; border-radius: 8px;">
+          <p style="font-family: var(--sans); font-size: 14px; color: var(--accent-strong); font-weight: 700; margin-bottom: 6px;">Network Engineering Team</p>
+          <p style="color: var(--ink-soft); font-size: 14px; margin-bottom: 0; line-height: 1.6;">Updated existing firewall rules and added new rules for port 1936 and new Azure Media Services domain whitelist configuration</p>
+        </div>
+        <div style="background: var(--accent-soft); border-left: 3px solid var(--accent); padding: 16px 20px; border-radius: 8px;">
+          <p style="font-family: var(--sans); font-size: 14px; color: var(--accent-strong); font-weight: 700; margin-bottom: 6px;">Studio Team</p>
+          <p style="color: var(--ink-soft); font-size: 14px; margin-bottom: 0; line-height: 1.6;">Validated new RTMP configuration with broadcasting equipment and conducted stream stability testing before AGM</p>
+        </div>
+        <div style="background: var(--accent-soft); border-left: 3px solid var(--accent); padding: 16px 20px; border-radius: 8px;">
+          <p style="font-family: var(--sans); font-size: 14px; color: var(--accent-strong); font-weight: 700; margin-bottom: 6px;">Guest Relations Team</p>
+          <p style="color: var(--ink-soft); font-size: 14px; margin-bottom: 0; line-height: 1.6;">Tested end-to-end viewer experience and confirmed seamless stream delivery for AGM attendees</p>
+        </div>
+      </div>
+
+      <p><strong>Updated RTMP Configuration Distributed to Teams:</strong></p>
+      <div class="code-block">
+<strong>Microsoft Teams Live Events - Updated RTMP Settings</strong><br>
+RTMP Server: rtmp://[event-id].ingest.streaming.mediaservices.windows.net:1936<br>
+Stream Key: [obtained from Teams Live Event setup]<br>
+Video Codec: H.264<br>
+Audio Codec: AAC<br>
+Bitrate: 4500 kbps<br>
+Resolution: 1920x1080 @ 30fps<br>
+Keyframe Interval: 2 seconds<br>
+<br>
+<strong>Critical Changes:</strong><br>
+✓ Port updated: 1935 → 1936<br>
+✓ Domain updated: New Azure Media Services endpoint<br>
+✓ Firewall rules updated for new port and domain
+      </div>
+
+      <div class="project-divider"></div>
+
+      <p><strong>Outcomes & Impact</strong></p>
+      <p>The RTMP protocol migration was completed successfully, ensuring business continuity for the AGM and all subsequent corporate events without streaming failures.</p>
+
+      <p><strong>Results:</strong></p>
+      <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; margin: 24px 0;">
+        <div style="background: var(--surface); border: 2px solid var(--border); border-radius: 10px; padding: 20px; text-align: center;">
+          <p style="font-size: 36px; font-weight: 700; color: var(--accent); margin-bottom: 8px; font-family: var(--serif);">100%</p>
+          <p style="font-size: 13px; color: var(--ink-soft); text-transform: uppercase; letter-spacing: 0.05em; font-weight: 600; margin-bottom: 0;">Success Rate</p>
+          <p style="font-size: 12px; color: var(--ink-soft); margin-top: 4px; margin-bottom: 0;">AGM and all events streamed flawlessly</p>
+        </div>
+        <div style="background: var(--surface); border: 2px solid var(--border); border-radius: 10px; padding: 20px; text-align: center;">
+          <p style="font-size: 36px; font-weight: 700; color: var(--accent); margin-bottom: 8px; font-family: var(--serif);">0</p>
+          <p style="font-size: 13px; color: var(--ink-soft); text-transform: uppercase; letter-spacing: 0.05em; font-weight: 600; margin-bottom: 0;">Service Disruptions</p>
+          <p style="font-size: 12px; color: var(--ink-soft); margin-top: 4px; margin-bottom: 0;">Zero failed events due to protocol change</p>
+        </div>
+        <div style="background: var(--surface); border: 2px solid var(--border); border-radius: 10px; padding: 20px; text-align: center;">
+          <p style="font-size: 36px; font-weight: 700; color: var(--accent); margin-bottom: 8px; font-family: var(--serif);">2 Weeks</p>
+          <p style="font-size: 13px; color: var(--ink-soft); text-transform: uppercase; letter-spacing: 0.05em; font-weight: 600; margin-bottom: 0;">Migration Timeline</p>
+          <p style="font-size: 12px; color: var(--ink-soft); margin-top: 4px; margin-bottom: 0;">Completed before AGM deadline</p>
+        </div>
+        <div style="background: var(--surface); border: 2px solid var(--border); border-radius: 10px; padding: 20px; text-align: center;">
+          <p style="font-size: 36px; font-weight: 700; color: var(--accent); margin-bottom: 8px; font-family: var(--serif);">3</p>
+          <p style="font-size: 13px; color: var(--ink-soft); text-transform: uppercase; letter-spacing: 0.05em; font-weight: 600; margin-bottom: 0;">Teams Coordinated</p>
+          <p style="font-size: 12px; color: var(--ink-soft); margin-top: 4px; margin-bottom: 0;">Networks, Studio, Guest Relations</p>
+        </div>
+      </div>
+
+      <p><strong>Business Outcomes:</strong></p>
+      <ul>
+        <li><strong>Business Continuity Maintained:</strong> AGM broadcast successfully to shareholders and stakeholders without technical issues</li>
+        <li><strong>Risk Mitigation:</strong> Proactive migration prevented potential event failures and reputational damage</li>
+        <li><strong>Cross-Team Collaboration:</strong> Demonstrated effective coordination across network, security, and event production teams</li>
+        <li><strong>Documentation Excellence:</strong> Created updated runbooks and configuration guides for future events and operators</li>
+        <li><strong>Vendor Relationship Management:</strong> Coordinated with external AV vendors to ensure their systems were updated</li>
+        <li><strong>Network Architecture Modernisation:</strong> Successfully transitioned from legacy firewall rules to updated configuration supporting new Azure Media Services infrastructure</li>
+      </ul>
+
+      <div class="project-divider"></div>
+
+      <p><strong>Key Learnings: Managing Technical Migrations Under Pressure</strong></p>
+      <p>This 2-week protocol migration highlighted critical lessons about managing technical changes that impact business-critical systems under tight deadlines.</p>
+
+      <p><strong>Key Takeaways:</strong></p>
+      <ul>
+        <li><strong>Proactive Monitoring of Vendor Updates is Essential:</strong> Microsoft's announcement could have been missed; monitoring platform updates and technical bulletins is critical for avoiding surprises</li>
+        <li><strong>Impact Assessment Must Be Immediate:</strong> Understanding which events, systems, and teams are affected allows for rapid prioritisation and resource allocation</li>
+        <li><strong>Network Dependencies Are Often Invisible:</strong> Existing firewall rules, port configurations, and domain whitelists aren't always documented; understanding what rules needed updating versus what new rules needed adding was critical to the migration timeline</li>
+        <li><strong>Clear Communication Prevents Confusion:</strong> Broadcasting teams needed simple, actionable instructions, not technical jargon; providing side-by-side configuration comparisons accelerated adoption</li>
+        <li><strong>Testing Before High-Stakes Events Is Non-Negotiable:</strong> Pre-event rehearsals with the new configuration validated the migration and gave operators confidence before the AGM</li>
+        <li><strong>Cross-Functional Coordination Drives Success:</strong> This wasn't a one-team effort; network engineering, security, event production, and broadcast operators all had to align within tight timelines</li>
+        <li><strong>Documentation Is Your Safety Net:</strong> Updated runbooks and configuration guides ensured that future events wouldn't be affected, even with operator turnover</li>
+        <li><strong>Legacy Infrastructure Requires Careful Migration:</strong> Updating existing firewall rules while adding new ones required coordination to avoid breaking current functionality while enabling new capabilities</li>
+        <li><strong>Time Pressure Demands Parallel Execution:</strong> With only 2 weeks before the AGM, tasks had to run in parallel—network updates, documentation, and stakeholder communication happened simultaneously rather than sequentially</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    © MMXXVI. Made by Queenie Li.
+  </div>
+</footer>
+
+<script>
+  window.addEventListener('load', function() {
+    window.scrollTo(0, 0);
+  });
+
+  // Mobile menu functionality
+  const menuBtn = document.getElementById('menuBtnToggle');
+  const navPanel = document.getElementById('navPanel');
+  const navClose = document.getElementById('navClose');
+  const panelOverlay = document.getElementById('panelOverlay');
+
+  function openNav() {
+    navPanel.classList.add('open');
+    panelOverlay.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeNav() {
+    navPanel.classList.remove('open');
+    panelOverlay.classList.remove('open');
+    document.body.style.overflow = '';
+  }
+
+  if (menuBtn) {
+    menuBtn.addEventListener('click', openNav);
+  }
+  if (navClose) {
+    navClose.addEventListener('click', closeNav);
+  }
+  if (panelOverlay) {
+    panelOverlay.addEventListener('click', closeNav);
+  }
+
+  // Back to top functionality
+  (function() {
+    const backToTop = document.getElementById('backToTop');
+
+    window.addEventListener('scroll', function() {
+      if (window.pageYOffset > 300) {
+        backToTop.classList.remove('hidden');
+      } else {
+        backToTop.classList.add('hidden');
+      }
+    });
+
+    backToTop.addEventListener('click', function() {
+      window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+      });
+    });
+  })();
+</script>
+
+</body>
+</html>
