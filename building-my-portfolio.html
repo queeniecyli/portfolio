@@ -1,0 +1,847 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Building My Portfolio - Queenie Li</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'%3E%3Cpath d='M38,200 L38,95 Q38,15 100,15 Q162,15 162,95 L162,200 Z' fill='%236B4226' stroke='%232B1D14' stroke-width='4'/%3E%3Cpath d='M85,150 Q100,158 115,150 L115,172 Q100,178 85,172 Z' fill='%23EEC9A0'/%3E%3Cpath d='M85,150 L85,172 Q100,178 115,172 L115,150' stroke='%232B1D14' stroke-width='2' fill='none'/%3E%3Cpath d='M70,60 L148,95 Q148,150 100,155 Q52,150 52,95 Q52,62 58,60 Z' fill='%23EEC9A0' stroke='%232B1D14' stroke-width='4'/%3E%3Ccircle cx='82' cy='100' r='6' fill='%232B1D14'/%3E%3Ccircle cx='118' cy='100' r='6' fill='%232B1D14'/%3E%3Cellipse cx='72' cy='112' rx='9' ry='6' fill='%23F0A0A8' opacity='0.75'/%3E%3Cellipse cx='128' cy='112' rx='9' ry='6' fill='%23F0A0A8' opacity='0.75'/%3E%3Cpath d='M92,122 Q100,128 108,122' stroke='%232B1D14' stroke-width='3' fill='none'/%3E%3Cpath d='M40,200 L40,193 Q42,176 64,170 Q82,166 100,168 Q118,166 136,170 Q158,176 160,193 L160,200 Z' fill='%239B9B94' stroke='%232B1D14' stroke-width='4'/%3E%3C/svg%3E">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,500&family=Inter:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap');
+
+  :root {
+    --page-bg: #f7efe8;
+    --banner-bg: linear-gradient(135deg, #224b5b 0%, #356f7a 100%);
+    --banner-text: #f8f3ea;
+    --surface: #ffffff;
+    --surface-alt: #f3ebe0;
+    --cream: #f7efe8;
+    --cream-dim: #efe0cf;
+    --ink: #26343f;
+    --ink-soft: #5e6b76;
+    --rust: #c96b46;
+    --rust-soft: #f3dccf;
+    --accent: #2b7a75;
+    --accent-strong: #215c57;
+    --accent-soft: #dcefe9;
+    --border: #d9d2c7;
+    --serif: 'Fraunces', serif;
+    --sans: 'Manrope', 'Inter', sans-serif;
+    --mono: 'IBM Plex Mono', monospace;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: linear-gradient(180deg, #fcf8f2 0%, var(--page-bg) 100%);
+    color: var(--ink);
+    font-family: var(--sans);
+    line-height: 1.7;
+    font-size: 16px;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+
+  .wrap { max-width: 1200px; margin: 0 auto; padding: 0 48px; }
+
+  /* header */
+  header {
+    position: sticky; top: 0; z-index: 20;
+    background: var(--banner-bg);
+    color: var(--banner-text);
+    backdrop-filter: blur(10px);
+    border-bottom: none;
+    box-shadow: 0 10px 30px rgba(20, 39, 49, 0.12);
+  }
+  header .wrap {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    height: 76px;
+    max-width: 1200px;
+    padding: 0 48px;
+  }
+  .header-center {
+    display: flex;
+    gap: 32px;
+    align-items: center;
+  }
+  .header-center a {
+    font-family: var(--sans);
+    font-size: 13px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.32em;
+    color: var(--banner-text);
+    text-decoration: none;
+    transition: color 0.2s ease, opacity 0.2s ease;
+  }
+  .header-center a:hover { color: #ffd9b8; }
+  .header-right { justify-self: end; }
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-family: var(--serif);
+    font-weight: 600;
+    font-size: 24px;
+    color: var(--banner-text);
+    text-decoration: none;
+    letter-spacing: -0.01em;
+  }
+  .logo span { color: #ffd9b8; }
+  .header-left { display: flex; align-items: center; gap: 18px; }
+  .connect-btn {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: var(--accent); color: white;
+    font-family: var(--sans);
+    font-size: 13px; font-weight: 700;
+    letter-spacing: 0.02em;
+    padding: 10px 20px 10px 16px; border-radius: 999px;
+    text-decoration: none;
+    transition: background 0.2s ease, transform 0.2s ease, gap 0.2s ease, box-shadow 0.2s ease;
+    box-shadow: 0 4px 12px rgba(43, 122, 117, 0.15);
+  }
+  .connect-btn:hover {
+    background: var(--accent-strong);
+    transform: translateY(-1px);
+    gap: 11px;
+    box-shadow: 0 6px 16px rgba(43, 122, 117, 0.25);
+  }
+  .connect-btn svg { width: 16px; height: 16px; flex-shrink: 0; }
+
+  /* blog detail page */
+  .blog-detail {
+    padding: 60px 0 100px;
+  }
+  .back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--accent);
+    text-decoration: none;
+    font-family: var(--sans);
+    font-size: 13px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 32px;
+    transition: gap 0.2s ease;
+  }
+  .back-link:hover { gap: 12px; }
+  .blog-header {
+    margin-bottom: 48px;
+    padding-bottom: 32px;
+    border-bottom: 1px solid var(--border);
+  }
+  .blog-header h1 {
+    font-family: var(--serif);
+    font-size: clamp(32px, 4vw, 48px);
+    font-weight: 600;
+    margin-bottom: 16px;
+    color: var(--ink);
+  }
+  .blog-meta {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--ink-soft);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+  .blog-content p {
+    color: var(--ink-soft);
+    font-size: 16px;
+    line-height: 1.8;
+    margin-bottom: 24px;
+  }
+  .blog-content p strong {
+    color: var(--ink);
+    font-size: 20px;
+    display: block;
+    margin-top: 40px;
+    margin-bottom: 20px;
+  }
+  .blog-content ul {
+    color: var(--ink-soft);
+    margin-left: 28px;
+    margin-top: 16px;
+    margin-bottom: 24px;
+  }
+  .blog-content li {
+    color: var(--ink-soft);
+    margin-bottom: 12px;
+    line-height: 1.7;
+    font-size: 16px;
+  }
+  .blog-divider {
+    height: 1px;
+    background: var(--border);
+    margin: 48px 0;
+  }
+  .info-box {
+    background: var(--surface-alt);
+    border-left: 4px solid var(--accent);
+    padding: 24px;
+    margin: 24px 0;
+    border-radius: 8px;
+  }
+  .info-box p {
+    margin-bottom: 12px;
+  }
+  .info-box p:last-child {
+    margin-bottom: 0;
+  }
+  .tech-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 16px;
+    margin: 24px 0;
+  }
+  .tech-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 20px;
+    border-radius: 8px;
+  }
+  .tech-card h4 {
+    font-family: var(--sans);
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--accent);
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  .tech-card p {
+    margin-bottom: 0;
+    font-size: 15px;
+  }
+
+  footer {
+    padding: 40px 0;
+    text-align: center;
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--ink-soft);
+    border-top: 1px solid var(--cream-dim);
+  }
+
+  /* Mobile menu button */
+  .menu-btn {
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 4px;
+    background: var(--accent);
+    padding: 10px 16px;
+    border-radius: 999px;
+    border: none;
+    cursor: pointer;
+    height: 41px;
+    transition: background 0.2s ease, transform 0.2s ease;
+  }
+  .menu-btn:hover {
+    background: var(--accent-strong);
+    transform: translateY(-1px);
+  }
+  .menu-btn span {
+    display: block;
+    width: 20px;
+    height: 2px;
+    background: white;
+    transition: background 0.2s ease;
+  }
+
+  /* nav panel */
+  .nav-panel {
+    position: fixed;
+    top: 0;
+    right: 0;
+    height: 100%;
+    width: 420px;
+    background: var(--surface);
+    border-left: 1px solid var(--border);
+    z-index: 30;
+    transform: translateX(100%);
+    transition: transform 0.35s cubic-bezier(.65,0,.35,1);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 60px;
+    box-shadow: -10px 0 30px rgba(20, 39, 49, 0.08);
+  }
+  .nav-panel.open {
+    transform: translateX(0);
+  }
+  .nav-panel-close {
+    position: absolute;
+    top: 32px;
+    right: 48px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-family: var(--sans);
+    font-size: 13px;
+    color: var(--ink-soft);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    transition: color 0.2s ease;
+  }
+  .nav-panel-close:hover {
+    color: var(--accent);
+  }
+  .nav-panel nav {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .nav-panel nav a {
+    color: var(--ink);
+    text-decoration: none;
+    font-family: var(--serif);
+    font-size: 36px;
+    padding: 18px 0;
+    border-bottom: 1px solid var(--accent-soft);
+    transition: color 0.2s ease, padding-left 0.2s ease;
+  }
+  .nav-panel nav a:hover {
+    color: var(--accent);
+    padding-left: 8px;
+  }
+  .nav-panel-cta {
+    margin-top: 24px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 16px 32px !important;
+    background: var(--accent) !important;
+    color: white !important;
+    border-radius: 999px;
+    font-family: var(--sans) !important;
+    font-size: 16px !important;
+    font-weight: 700;
+    text-decoration: none;
+    border: none !important;
+    transition: background 0.2s ease, transform 0.2s ease;
+  }
+  .nav-panel-cta:hover {
+    background: var(--accent-strong) !important;
+    transform: translateY(-2px);
+    padding-left: 32px !important;
+  }
+
+  /* overlay */
+  .panel-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(33,29,24,0.35);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+    z-index: 29;
+  }
+  .panel-overlay.open {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  /* back to top button */
+  .back-to-top {
+    position: fixed;
+    left: 32px;
+    bottom: 32px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    z-index: 9998;
+    opacity: 1;
+    pointer-events: auto;
+  }
+  .back-to-top.hidden {
+    opacity: 0;
+    pointer-events: none;
+  }
+  .back-to-top-circle {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: var(--accent);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(43, 122, 117, 0.2);
+  }
+  .back-to-top:hover .back-to-top-circle {
+    background: var(--accent-strong);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(43, 122, 117, 0.3);
+  }
+  .back-to-top svg {
+    width: 20px;
+    height: 20px;
+    stroke: white;
+    stroke-width: 2.5;
+  }
+  .back-to-top-text {
+    font-family: var(--sans);
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--ink);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  @media (max-width: 700px) {
+    .wrap { padding: 0 24px; }
+    header .wrap { padding: 0 24px; }
+    .header-center { display: none; }
+    .menu-btn { display: inline-flex; }
+    .nav-panel { width: 100%; }
+    .back-to-top {
+      left: 24px;
+      bottom: 24px;
+    }
+    .back-to-top-text {
+      display: none;
+    }
+  }
+</style>
+</head>
+<body>
+
+<button class="back-to-top hidden" id="backToTop" aria-label="Back to top">
+  <div class="back-to-top-circle">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+      <polyline points="18 15 12 9 6 15"></polyline>
+    </svg>
+  </div>
+  <span class="back-to-top-text">Back to Top</span>
+</button>
+
+<header>
+  <div class="wrap">
+    <div class="header-left">
+      <a class="logo" href="index.html">QueenieLi</a>
+    </div>
+    <div class="header-center">
+      <a href="index.html">Home</a>
+      <a href="index.html#journey">Experience</a>
+      <a href="index.html#work">Work</a>
+      <a href="index.html#about">About</a>
+    </div>
+    <div class="header-right">
+      <a class="connect-btn" href="mailto:queeniecyli@gmail.com?subject=Hi%20Queenie%2C%20let%27s%20connect!">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 5l10 7 10-7"/><rect x="2" y="4" width="20" height="16" rx="2"/></svg>
+        Let's connect
+      </a>
+      <button class="menu-btn" id="menuBtnToggle" aria-label="Open menu">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<div class="panel-overlay" id="panelOverlay"></div>
+
+<aside class="nav-panel" id="navPanel">
+  <button class="nav-panel-close" id="navClose">CLOSE ✕</button>
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="index.html#journey">Experience</a>
+    <a href="index.html#work">Work</a>
+    <a href="index.html#about">About</a>
+    <a href="mailto:queeniecyli@gmail.com?subject=Hi%20Queenie%2C%20let%27s%20connect!" class="nav-panel-cta">Let's connect</a>
+  </nav>
+</aside>
+
+<section class="blog-detail">
+  <div class="wrap">
+    <a href="blog.html" class="back-link">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="15 18 9 12 15 6"></polyline>
+      </svg>
+      Back to Blog
+    </a>
+
+    <div class="blog-header">
+      <h1>Building My Portfolio: Why and How</h1>
+      <span class="blog-meta">Personal · 26 July 2026</span>
+    </div>
+
+    <div class="blog-content">
+      <p><strong>Why I Built This</strong></p>
+      <p>I've spent years working on enterprise deployments, technical implementations, and cross-functional coordination. My résumé captures what I've done, but not the full context behind each project.</p>
+
+      <p>What was missing:</p>
+      <ul>
+        <li>The problem-solving process and decision-making</li>
+        <li>Challenges faced and how they were resolved</li>
+        <li>Cross-functional coordination and stakeholder management</li>
+        <li>The real stories behind enterprise migrations and technical implementations</li>
+      </ul>
+
+      <p>I needed a platform to showcase projects like coordinating the RTMP protocol migration with a month's notice before a major event, or building an AI chatbot that prevents hallucinations in medical research citations. These projects deserve more than a single bullet point.</p>
+
+      <p>This portfolio demonstrates both technical capability and attention to craft. Good work deserves good presentation.</p>
+
+      <div class="blog-divider"></div>
+
+      <p><strong>The Technical Stack</strong></p>
+      <p>I built this site from scratch using vanilla HTML, CSS, and JavaScript. No frameworks, no templates.</p>
+
+      <div class="info-box">
+        <p><strong>Technology Choices:</strong></p>
+        <p><strong>Core:</strong> HTML5, CSS3, Vanilla JavaScript</p>
+        <p><strong>Dependencies:</strong> Google Fonts only</p>
+        <p><strong>Performance:</strong> Loads in under 1 second on 3G</p>
+        <p><strong>Maintenance:</strong> No framework deprecation concerns</p>
+      </div>
+
+      <p>Why no frameworks? For a portfolio site, vanilla JavaScript provides:</p>
+      <ul>
+        <li>Full control over performance and optimisation</li>
+        <li>No dependency management or version conflicts</li>
+        <li>Lightweight codebase with minimal overhead</li>
+        <li>Long-term maintainability without framework updates</li>
+        <li>Fast load times and responsive interactions</li>
+      </ul>
+
+      <p>This approach demonstrates technical fundamentals and the ability to ship performant solutions without unnecessary complexity.</p>
+
+      <div class="blog-divider"></div>
+
+      <p><strong>The Colour Palette</strong></p>
+      <p>I chose a warm, earthy palette to differentiate from the typical blue-and-white tech portfolios while maintaining professional credibility.</p>
+
+      <div class="tech-grid">
+        <div class="tech-card">
+          <h4>Background</h4>
+          <p><strong>#f7efe8</strong> — Soft cream background</p>
+          <p><strong>Why:</strong> Pure white backgrounds cause eye strain during extended reading. This warm cream feels more approachable and reduces fatigue.</p>
+        </div>
+        <div class="tech-card">
+          <h4>Header Gradient</h4>
+          <p><strong>#224b5b → #356f7a</strong> — Muted teal gradient</p>
+          <p><strong>Why:</strong> Teal conveys technical competence without the corporate coldness of navy. The gradient adds visual depth without distraction.</p>
+        </div>
+        <div class="tech-card">
+          <h4>Primary Text</h4>
+          <p><strong>#26343f</strong> — Deep charcoal</p>
+          <p><strong>Why:</strong> Black on cream creates harsh contrast. Charcoal maintains readability while feeling softer and more refined.</p>
+        </div>
+        <div class="tech-card">
+          <h4>Secondary Text</h4>
+          <p><strong>#5e6b76</strong> — Soft grey</p>
+          <p><strong>Why:</strong> Creates clear hierarchy for dates and metadata without competing with primary content for attention.</p>
+        </div>
+        <div class="tech-card">
+          <h4>Accent (Links)</h4>
+          <p><strong>#c96b46</strong> — Warm rust</p>
+          <p><strong>Why:</strong> Warm accent balances the cool teal header. Signals interactivity while complementing the earthy palette.</p>
+        </div>
+        <div class="tech-card">
+          <h4>Accent (Buttons)</h4>
+          <p><strong>#2b7a75</strong> — Soft green</p>
+          <p><strong>Why:</strong> Distinct from link colour to differentiate primary actions. Green signals forward movement and calls to action.</p>
+        </div>
+      </div>
+
+      <p><strong>Accessibility:</strong> All colour combinations tested to meet WCAG AA contrast standards. Accessibility isn't negotiable—if users with low vision can't read the content, the design has failed its purpose.</p>
+
+      <div class="blog-divider"></div>
+
+      <p><strong>Typography</strong></p>
+      <p>Typography carries most of the design weight. I chose three typefaces that work together to create hierarchy and personality.</p>
+
+      <div class="tech-grid">
+        <div class="tech-card">
+          <h4>Fraunces (Serif)</h4>
+          <p><strong>Use:</strong> Headings and display text</p>
+          <p><strong>Why:</strong> Establishes brand personality immediately. A distinctive serif signals thoughtfulness and craft without feeling pretentious. Creates strong visual hierarchy that guides the eye through content.</p>
+        </div>
+        <div class="tech-card">
+          <h4>Manrope (Sans-Serif)</h4>
+          <p><strong>Use:</strong> Body text and navigation</p>
+          <p><strong>Why:</strong> Geometric structure provides clean readability at all sizes. Performs well on mobile without becoming blurry. Professional enough for technical content without being sterile.</p>
+        </div>
+        <div class="tech-card">
+          <h4>IBM Plex Mono</h4>
+          <p><strong>Use:</strong> Dates, tags, technical content</p>
+          <p><strong>Why:</strong> Monospace signals precision and technical accuracy. Creates instant visual distinction for metadata without needing boxes or borders. Reinforces technical credibility.</p>
+        </div>
+      </div>
+
+      <p><strong>Sizing Strategy:</strong></p>
+      <ul>
+        <li>Headings scale from 32px (mobile) to 72px (desktop) using clamp() functions—ensures readability without overwhelming small screens</li>
+        <li>Body text fixed at 16px with 1.7 line height—the sweet spot for comfortable reading across devices</li>
+        <li>Consistent vertical rhythm creates balanced reading experience and prevents text from feeling cramped or scattered</li>
+      </ul>
+
+      <div class="blog-divider"></div>
+
+      <p><strong>Layout and Spacing</strong></p>
+
+      <div class="info-box">
+        <p><strong>Container:</strong> 1200px max-width</p>
+        <p><strong>Padding:</strong> 48px (desktop) / 24px (mobile)</p>
+        <p><strong>Layout System:</strong> CSS Grid</p>
+        <p><strong>Spacing Scale:</strong> 8px, 12px, 16px, 24px, 32px, 48px</p>
+      </div>
+
+      <p><strong>Why these choices:</strong></p>
+      <ul>
+        <li><strong>1200px container:</strong> Prevents text lines from stretching beyond comfortable reading width on large monitors. Keeps content focused and centred.</li>
+        <li><strong>Generous padding:</strong> Creates breathing room. Text running edge-to-edge feels aggressive and overwhelming. White space signals quality and thoughtfulness.</li>
+        <li><strong>CSS Grid:</strong> Modern layout system that adapts cleanly across screen sizes without media query complexity. Header maintains perfect three-column balance on desktop, collapses gracefully on mobile.</li>
+        <li><strong>Consistent spacing scale:</strong> No arbitrary numbers. Every margin and padding follows the same rhythm, creating visual coherence that feels intentional rather than accidental.</li>
+      </ul>
+
+      <p><strong>Why spacing matters:</strong> Dense layouts overwhelm readers. Generous whitespace creates hierarchy, guides attention, and makes content digestible. The spacing isn't decorative—it's doing the work of directing focus and creating reading rhythm.</p>
+
+      <div class="blog-divider"></div>
+
+      <p><strong>Project Page Structure</strong></p>
+      <p>Different projects need different storytelling. A résumé treats all work the same—this portfolio adapts the narrative to what matters most for each project type.</p>
+
+      <div class="tech-grid">
+        <div class="tech-card">
+          <h4>Enterprise Projects</h4>
+          <p><strong>Focus:</strong> Context, stakeholder coordination, business outcomes</p>
+          <p><strong>Why:</strong> Technical execution is expected. What differentiates is the ability to navigate organisational complexity and deliver under constraints. RTMP migration matters because it coordinated three teams in two weeks, not because firewall rules were updated.</p>
+        </div>
+        <div class="tech-card">
+          <h4>Technical Projects</h4>
+          <p><strong>Focus:</strong> Architecture decisions, engineering challenges, implementation details</p>
+          <p><strong>Why:</strong> Demonstrates depth of technical thinking. RAG Chatbot shows understanding of vector databases, prompt engineering, and hallucination prevention—the decisions that separate competent from thoughtful implementation.</p>
+        </div>
+        <div class="tech-card">
+          <h4>Product Projects</h4>
+          <p><strong>Focus:</strong> Problem validation, user research, product thinking</p>
+          <p><strong>Why:</strong> Shows ability to identify problems worth solving. OnTrack demonstrates user research, journey mapping, and MVP scoping—product sense beyond just execution.</p>
+        </div>
+      </div>
+
+      <p><strong>Why this structure:</strong> Each project follows the same narrative framework (challenge, approach, implementation, outcomes, learnings) but the emphasis shifts. The template provides consistency. The content provides context.</p>
+
+      <div class="blog-divider"></div>
+
+      <p><strong>Interactive Elements</strong></p>
+
+      <p><strong>Page Transitions:</strong></p>
+      <ul>
+        <li>Full-screen teal overlay with "Loading..." indicator</li>
+        <li>Timing: 300ms fade-in, 400ms delay, 600ms fade-out</li>
+        <li><strong>Why:</strong> Creates continuity between pages instead of jarring jumps. The timing is tuned to feel smooth—fast enough to stay responsive, slow enough to register. Signals progress and maintains context during navigation.</li>
+      </ul>
+
+      <p><strong>Hover States:</strong></p>
+      <ul>
+        <li>Links shift colour, buttons lift slightly (translateY(-2px)), cards show border changes</li>
+        <li><strong>Why:</strong> Provides immediate feedback that elements are interactive before clicking. Subtle movements feel refined rather than gimmicky. Users learn the interface behaviour quickly.</li>
+      </ul>
+
+      <p><strong>Mobile Menu:</strong></p>
+      <ul>
+        <li>Slides in from right with cubic-bezier easing, 35% opacity overlay</li>
+        <li><strong>Why:</strong> Natural motion feels responsive. Background dim focuses attention on menu without completely obscuring content. Users maintain context of where they are while navigating.</li>
+      </ul>
+
+      <p><strong>Back to Top Button:</strong></p>
+      <ul>
+        <li>Appears after 300px scroll, shows icon + text on desktop, icon only on mobile</li>
+        <li><strong>Why:</strong> Improves usability on long pages without cluttering the initial view. Collapses to icon on mobile to save screen space while maintaining functionality.</li>
+      </ul>
+
+      <div class="blog-divider"></div>
+
+      <p><strong>Accessibility</strong></p>
+      <p>Accessibility is a baseline requirement, built in from the start.</p>
+
+      <p><strong>Semantic HTML:</strong></p>
+      <ul>
+        <li>Proper heading hierarchy (h1–h6)</li>
+        <li>Navigation wrapped in nav elements</li>
+        <li>Sections use appropriate semantic tags</li>
+        <li>Screen readers can navigate structure logically</li>
+      </ul>
+
+      <p><strong>Keyboard Navigation:</strong></p>
+      <ul>
+        <li>All interactive elements have ARIA labels</li>
+        <li>Tab order follows visual order</li>
+        <li>Focus states clearly visible</li>
+        <li>Full site navigation possible without mouse</li>
+      </ul>
+
+      <p><strong>Colour Contrast:</strong></p>
+      <ul>
+        <li>All combinations meet WCAG AA standards</li>
+        <li>Tested every text and background pairing</li>
+        <li>Ensures readability for users with low vision</li>
+      </ul>
+
+      <p><strong>Mobile Accessibility:</strong></p>
+      <ul>
+        <li>Text reflows naturally on all screen sizes</li>
+        <li>Images scale appropriately</li>
+        <li>Touch targets minimum 44px for easy interaction</li>
+      </ul>
+
+      <div class="blog-divider"></div>
+
+      <p><strong>The Design System</strong></p>
+      <p>I built the entire site on CSS custom properties. This decision prioritises long-term maintainability over short-term convenience.</p>
+
+      <div class="info-box">
+        <p><strong>Core Variables:</strong></p>
+        <p><strong>Colours:</strong> --page-bg, --ink, --ink-soft, --accent, --accent-strong, --border</p>
+        <p><strong>Typography:</strong> --serif, --sans, --mono</p>
+        <p><strong>Spacing:</strong> Defined scale from 8px to 48px</p>
+        <p><strong>Effects:</strong> Border radius, shadows, transitions</p>
+      </div>
+
+      <p><strong>Why this approach:</strong></p>
+      <ul>
+        <li><strong>Single source of truth:</strong> Colours, fonts, and spacing defined once. Want to adjust the palette? Change one variable and the entire site updates. No find-and-replace across files, no missed instances.</li>
+        <li><strong>Future-proof maintenance:</strong> Six months from now when I want to tweak something, I change one line instead of hunting through stylesheets.</li>
+        <li><strong>Consistent components:</strong> Buttons share hover states. Cards use unified styling. Navigation follows same patterns. This consistency reduces cognitive load—users learn the interface once and everything behaves as expected.</li>
+      </ul>
+
+      <p><strong>Why it matters:</strong> This architecture seems boring until you need to make changes. Then it saves hours of work and prevents inconsistent updates across pages.</p>
+
+      <div class="blog-divider"></div>
+
+      <p><strong>Content Strategy</strong></p>
+
+      <p><strong>Site Structure:</strong></p>
+      <ul>
+        <li>Homepage: Introduction and overview</li>
+        <li>Work section: Featured projects with context</li>
+        <li>Projects page: Grid view of all case studies</li>
+        <li>Individual project pages: Deep dives into each project</li>
+        <li>Blog: Reflections and technical discussions</li>
+      </ul>
+
+      <p><strong>Project Narrative Framework:</strong></p>
+      <ul>
+        <li>Challenge definition and business context</li>
+        <li>Technical approach and architecture decisions</li>
+        <li>Implementation details and problem-solving</li>
+        <li>Outcomes and measurable impact</li>
+        <li>Key learnings and what I'd do differently</li>
+      </ul>
+
+      <p>Writing these case studies required articulating not just what was built, but why it mattered, what challenges emerged, and how decisions were made. The process became a valuable reflection tool for understanding my own work more critically.</p>
+
+      <div class="blog-divider"></div>
+
+      <p><strong>Key Learnings</strong></p>
+
+      <p><strong>Design is Iterative:</strong> The colour palette went through five iterations before feeling right. Font combinations were tested extensively. Spacing adjusted repeatedly. The first version looked acceptable. The fifth version felt intentional. Good design requires time and refinement.</p>
+
+      <p><strong>Constraints Drive Solutions:</strong> Building without frameworks meant solving problems from first principles. This forced thoughtful decisions about CSS Grid layouts, vanilla JavaScript animations, and semantic HTML structure. The constraint of no libraries created better understanding of how everything works.</p>
+
+      <p><strong>Documentation Requires Clarity:</strong> Writing project case studies was harder than building the site. It required articulating not just what was done, but why it mattered, what alternatives were considered, and what could be improved. This clarity of thinking improves the work itself.</p>
+
+      <p><strong>Details Compound:</strong></p>
+      <ul>
+        <li>Font weight and line height create comfortable reading</li>
+        <li>Colour contrast ensures accessibility for all users</li>
+        <li>Transition timing affects how responsive the site feels</li>
+        <li>Hover states signal interactivity before clicking</li>
+        <li>Spacing consistency establishes visual rhythm and hierarchy</li>
+      </ul>
+
+      <p>Each decision is small. Together, they create the difference between a polished experience and an amateur one. This is why attention to detail matters—not perfectionism, but craft.</p>
+
+      <div class="blog-divider"></div>
+
+      <p><strong>What's Next</strong></p>
+      <p>This portfolio will continue to evolve as I take on new projects and refine my approach.</p>
+
+      <p><strong>Planned Updates:</strong></p>
+      <ul>
+        <li>Additional project case studies with deeper technical detail</li>
+        <li>Blog posts about strategy, implementation, and lessons learnt</li>
+        <li>Design refinements based on feedback and evolving preferences</li>
+        <li>Potential open-source components for others building portfolios</li>
+      </ul>
+
+      <p>If you'd like to connect, collaborate, or discuss technical strategy and enterprise deployments, reach out at <a href="mailto:queeniecyli@gmail.com">queeniecyli@gmail.com</a>.</p>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    © MMXXVI. Made by Queenie Li.
+  </div>
+</footer>
+
+<script>
+  window.addEventListener('load', function() {
+    window.scrollTo(0, 0);
+  });
+
+  // Mobile menu functionality
+  const menuBtn = document.getElementById('menuBtnToggle');
+  const navPanel = document.getElementById('navPanel');
+  const navClose = document.getElementById('navClose');
+  const panelOverlay = document.getElementById('panelOverlay');
+
+  function openNav() {
+    navPanel.classList.add('open');
+    panelOverlay.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeNav() {
+    navPanel.classList.remove('open');
+    panelOverlay.classList.remove('open');
+    document.body.style.overflow = '';
+  }
+
+  if (menuBtn) {
+    menuBtn.addEventListener('click', openNav);
+  }
+  if (navClose) {
+    navClose.addEventListener('click', closeNav);
+  }
+  if (panelOverlay) {
+    panelOverlay.addEventListener('click', closeNav);
+  }
+
+  // Back to top functionality
+  (function() {
+    const backToTop = document.getElementById('backToTop');
+
+    window.addEventListener('scroll', function() {
+      if (window.pageYOffset > 300) {
+        backToTop.classList.remove('hidden');
+      } else {
+        backToTop.classList.add('hidden');
+      }
+    });
+
+    backToTop.addEventListener('click', function() {
+      window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+      });
+    });
+  })();
+</script>
+
+</body>
+</html>
